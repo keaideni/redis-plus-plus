@@ -1,0 +1,1 @@
+build --cxxopt='-O2' --cxxopt='-std=c++11'
