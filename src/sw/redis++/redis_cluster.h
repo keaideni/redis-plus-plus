@@ -29,6 +29,8 @@
 #include "pipeline.h"
 #include "transaction.h"
 #include "redis.h"
+#include "queued_redis.h"
+#include "queue_pipe.h"
 
 namespace sw {
 
@@ -40,6 +42,7 @@ class QueuedRedis;
 using Transaction = QueuedRedis<TransactionImpl>;
 
 using Pipeline = QueuedRedis<PipelineImpl>;
+using ClusterPipeline = QueuedPipe<PipelineImpl>;
 
 class RedisCluster {
 public:
@@ -63,7 +66,8 @@ public:
 
     Pipeline pipeline(const StringView &hash_tag);
 
-    Pipeline pipeline(const std::shared_ptr<Connection>& connection);
+    // Pipeline pipeline(const std::shared_ptr<Connection>& connection);
+    ClusterPipeline pipeline(Connection* connection);
     void mhmget_pipeline(std::unordered_map<std::string, std::vector<std::string>> hkeys);
 
     Transaction transaction(const StringView &hash_tag, bool piped = false);

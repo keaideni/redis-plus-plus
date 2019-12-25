@@ -19,6 +19,8 @@
 #include "command.h"
 #include "errors.h"
 #include "queued_redis.h"
+#include "queue_pipe.h"
+#include "queue_pipe.hpp"
 
 namespace sw {
 
@@ -38,9 +40,15 @@ Pipeline RedisCluster::pipeline(const StringView &hash_tag) {
 
 
 
-Pipeline RedisCluster::pipeline(const std::shared_ptr<Connection>& con_) {
-    return Pipeline(con_);
+// Pipeline RedisCluster::pipeline(const std::shared_ptr<Connection>& con_) {
+//     return Pipeline(con_);
+// }
+
+ClusterPipeline RedisCluster::pipeline(Connection* con_) {
+    return ClusterPipeline(con_);
 }
+
+
 
 void RedisCluster::mhmget_pipeline(std::unordered_map<std::string, std::vector<std::string>> hkeys) {
     std::map<SlotRange, std::unordered_map<std::string, std::vector<std::string>>> node_hkeys;
@@ -63,6 +71,7 @@ void RedisCluster::mhmget_pipeline(std::unordered_map<std::string, std::vector<s
     for (auto& iter: node_hkeys) {
         auto guarded_connection = _pool.fetch(iter.first);
         // Pipeline pipe(guarded_connection.connection());
+        
     }
 }
 

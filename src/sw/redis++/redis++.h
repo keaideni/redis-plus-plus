@@ -1,3 +1,9 @@
+/*
+ * @Company: TWL
+ * @Author: xue jian
+ * @Email: xuejian@kanzhun.com
+ * @Date: 2019-12-25 10:10:47
+ */
 /**************************************************************************
    Copyright (c) 2017 sewenew
 
@@ -21,5 +27,7 @@
 #include "redis_cluster.h"
 #include "queued_redis.h"
 #include "sentinel.h"
+#include "queue_pipe.h"
+#include "queue_pipe.hpp"
 
 #endif // end SEWENEW_REDISPLUSPLUS_REDISPLUSPLUS_H

@@ -12,6 +12,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include <unistd.h>
 using namespace sw::redis;
 
 int main() {
@@ -48,11 +49,12 @@ int main() {
     // auto redis_cluster = RedisCluster("tcp://172.21.32.109:6479");
     std::vector<OptionalString> re;
     std::vector<std::string> codes({"690","691","693","696","692","689","687","695","664"});
-
+    
     auto guarded_connection = redis_cluster->pool().fetch("baf:20168580");
     Connection* haha = &guarded_connection.connection();
-    std::shared_ptr<Connection> tmp_c(haha);
-    auto pipe = redis_cluster->pipeline(tmp_c);
+    // std::shared_ptr<Connection> tmp_c(std::shared_ptr<Connection>(&guarded_connection.connection()));
+    
+    auto pipe = redis_cluster->pipeline(haha);
     pipe.hmget("baf:20168580", codes.begin(), codes.begin()+2);
     pipe.hmget("baf:20168580", codes.begin()+2, codes.begin()+4);
     pipe.hmget("baf:20168580", codes.begin()+4, codes.begin()+6);
@@ -69,4 +71,5 @@ int main() {
     for (auto& r:re) {
         std::cout<<r.value().size()<<std::endl;
     }
+    // sleep(5);
 }
