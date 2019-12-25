@@ -81,9 +81,11 @@ public:
 
     // Fetch a connection by node.
     GuardedConnection fetch(const Node &node);
-
+    GuardedConnection fetch(const SlotRange &slot_range);
+    std::size_t slot(const StringView &key);
+    mutable std::map<SlotRange, int8_t> bounds;
     void update();
-
+    
     ConnectionOptions connection_options(const StringView &key);
 
     ConnectionOptions connection_options();

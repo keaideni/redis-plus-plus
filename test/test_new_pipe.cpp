@@ -49,13 +49,15 @@ int main() {
     std::vector<OptionalString> re;
     std::vector<std::string> codes({"690","691","693","696","692","689","687","695","664"});
 
-    auto pipe = redis_cluster->pipeline("baf:20168580");
+    auto guarded_connection = redis_cluster->pool().fetch("baf:20168580");
+    Connection* haha = &guarded_connection.connection();
+    std::shared_ptr<Connection> tmp_c(haha);
+    auto pipe = redis_cluster->pipeline(tmp_c);
     pipe.hmget("baf:20168580", codes.begin(), codes.begin()+2);
     pipe.hmget("baf:20168580", codes.begin()+2, codes.begin()+4);
     pipe.hmget("baf:20168580", codes.begin()+4, codes.begin()+6);
     pipe.hmget("baf:20168580", codes.begin()+6, codes.begin()+8);
 
-    // redis_cluster->hmget("baf:20168580", codes.begin(), codes.end());
     auto reply = pipe.exec();
     for (size_t i(0); i<4; ++i) {
         auto tmp_re = reply.get<std::vector<OptionalString>>(i);

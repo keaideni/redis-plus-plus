@@ -7,3 +7,16 @@ cc_binary(
         "@cpp3rd_lib//hiredis:hiredis",
     ],
 )
+
+
+
+
+
+cc_binary(
+    name = "test_new_pipe",
+    srcs = glob(["src/sw/redis++/*.cpp", "src/sw/redis++/*.h", "src/sw/redis++/*.hpp", "test/test_new_pipe.cpp"]),
+    copts = ["-Isrc"],
+    deps = [
+        "@cpp3rd_lib//hiredis:hiredis",
+    ],
+)

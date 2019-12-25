@@ -51,6 +51,7 @@ public:
     // "tcp://127.0.0.1" or "tcp://127.0.0.1:6379"
     // Only need to specify one URI.
     explicit RedisCluster(const std::string &uri);
+    ShardsPool& pool(){return _pool;};
 
     RedisCluster(const RedisCluster &) = delete;
     RedisCluster& operator=(const RedisCluster &) = delete;
@@ -62,8 +63,8 @@ public:
 
     Pipeline pipeline(const StringView &hash_tag);
 
-    Pipeline pipeline(std::shared_ptr<Connection> connection);
-
+    Pipeline pipeline(const std::shared_ptr<Connection>& connection);
+    void mhmget_pipeline(std::unordered_map<std::string, std::vector<std::string>> hkeys);
 
     Transaction transaction(const StringView &hash_tag, bool piped = false);
 

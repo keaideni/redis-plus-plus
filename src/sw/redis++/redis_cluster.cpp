@@ -38,9 +38,34 @@ Pipeline RedisCluster::pipeline(const StringView &hash_tag) {
 
 
 
-Pipeline RedisCluster::pipeline(std::shared_ptr<Connection> con_) {
+Pipeline RedisCluster::pipeline(const std::shared_ptr<Connection>& con_) {
     return Pipeline(con_);
 }
+
+void RedisCluster::mhmget_pipeline(std::unordered_map<std::string, std::vector<std::string>> hkeys) {
+    std::map<SlotRange, std::unordered_map<std::string, std::vector<std::string>>> node_hkeys;
+    for (auto& iter: hkeys) {
+        auto tmp_slot = _pool.slot(iter.first);
+        auto bound_iter = _pool.bounds.lower_bound(SlotRange{tmp_slot, tmp_slot});
+        if (bound_iter == _pool.bounds.end() || tmp_slot < bound_iter->first.min) {
+            throw Error("Slot is out of range: " + std::to_string(tmp_slot));
+        }
+        auto& tmp_range = bound_iter->first;
+        if (node_hkeys.find(tmp_range) == node_hkeys.end()) {
+            std::unordered_map<std::string, std::vector<std::string>> tmp_map;
+            tmp_map.insert(iter);
+            node_hkeys.insert(std::make_pair(tmp_range, tmp_map));
+        } else {
+            node_hkeys.at(tmp_range).insert(iter);
+        }
+    }
+
+    for (auto& iter: node_hkeys) {
+        auto guarded_connection = _pool.fetch(iter.first);
+        // Pipeline pipe(guarded_connection.connection());
+    }
+}
+
 
 Transaction RedisCluster::transaction(const StringView &hash_tag, bool piped) {
     auto opts = _pool.connection_options(hash_tag);
