@@ -62,6 +62,9 @@ public:
 
     Pipeline pipeline(const StringView &hash_tag);
 
+    Pipeline pipeline(std::shared_ptr<Connection> connection);
+
+
     Transaction transaction(const StringView &hash_tag, bool piped = false);
 
     Subscriber subscriber();

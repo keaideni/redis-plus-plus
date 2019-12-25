@@ -36,6 +36,12 @@ Pipeline RedisCluster::pipeline(const StringView &hash_tag) {
     return Pipeline(std::make_shared<Connection>(opts));
 }
 
+
+
+Pipeline RedisCluster::pipeline(std::shared_ptr<Connection> con_) {
+    return Pipeline(con_);
+}
+
 Transaction RedisCluster::transaction(const StringView &hash_tag, bool piped) {
     auto opts = _pool.connection_options(hash_tag);
     return Transaction(std::make_shared<Connection>(opts), piped);
